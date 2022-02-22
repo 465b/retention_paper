@@ -1,0 +1,65 @@
+\documentclass[a4paper, 10pt, twocolumn]{article}
+
+\usepackage{graphicx}                % optional für Grafiken
+\usepackage[font=footnotesize]{caption}
+\usepackage[section]{placeins}
+%\usepackage{tabularx}               % optional für Tabellen
+%\usepackage{multirow}               % optional für Tabellen
+\usepackage{url}                	 % optional für Internet Links
+\usepackage{hyperref}
+
+%\usepackage[small,bf]{caption3}     % Bildunterschriften
+
+%\usepackage{parskip}
+
+\usepackage{titlesec}
+\usepackage{amsmath}                
+\usepackage{amssymb}
+
+% temporal packages
+\usepackage{lipsum}
+\SetLipsumDefault{1}
+
+%\usepackage{enumitem}
+%\setlist{nosep} % or \setlist{noitemsep} to leave space around whole list
+
+\usepackage{xcolor}
+\newcommand{\highlight}[1]{\colorbox{yellow}{\parbox{\columnwidth}{#1}}}
+
+%\pagestyle{empty}                   % weder Kopf- noch Fußzeile auf 1. Seite
+\graphicspath{{figures/}}
+
+
+\begin{document}
+
+\date{\small\today}                                        % kein Datum auf 1. Seite
+\title{
+	\vspace{-20mm}\textbf{	\large 
+	Plankton Retention mechanism studies at Elbe with IBM}
+	}
+\author{
+	Laurin Steidle\(^1\), Ross Vennel, Jana Hinners \\
+	\emph{
+		\small
+		\(^1\)laurin.steidle@uni-hamburg.de} \\
+	\emph{
+		\small Universitaet Hamburg, Grosse Elbstrasse 133, Germany}
+		}
+
+%--------------------------------------Abstract-------------------------------------------------
+\twocolumn[
+	\begin{@twocolumnfalse}
+		\maketitle
+  	\end{@twocolumnfalse}
+]
+
+\input{main_text.tex}
+
+\bibliography{references.bib}
+\bibliographystyle{unsrt}
+
+\end{document}
+
+
+
+
