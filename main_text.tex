@@ -1,14 +1,14 @@
-
 \section*{Introduction}
 %------------------------------------------------------------------------------
 %------------------------------------------------------------------------------
 
 % \subsection*{Estuaries and Phytoplankton}
 
-\texttt{Add a short paragraph as an outlook/summary of the paper.}
+\texttt{Add a short paragraph as an outlook of the paper? I was told thats what the cool kids do but I feel like thats already in the abstract.}
+
 
 Estuaries are important both for the climate system as well as for anthropogenic use.
-From a climate perspective they are highly productiv relative to their surface area 
+From a climate perspective they are highly productive relative to their surface area 
 which results in large amounts of direct carbon cycling 
 along with their important role as a source of nutrients and hatching grounds for marine ecosystem. (cite)
 They are also strongly anthropogenically influenced through e.g. harbors, diking, dredging, fishing and pollution which can be seen as a stressor on the ecosystem but it also adds an anthropogenic dependency on the ecosystem. (cite)
@@ -56,12 +56,26 @@ While they showed that upstream reseeding is conceptually possible they did so i
 Whether this is an actual realized phenomenon depends on the topology and hydrodynamic of the estuary.
 Nevertheless, it has been shown that both "outgrowing the losses" and "reseeding" are possible retention mechanism under certain conditions.
 
-In (cite) they use a \textbf{particle tracking model} also known as Lagragian model to study Zooplankton movement in the San Francisco Bay.
+In (cite) they use a particle tracking model also known as Lagragian model to study Zooplankton movement in the San Francisco Bay.
 They were able to show  that sinking and diel migration slows the outwashing process and might be beneficial retention tactic.
-However, they did so by ignoring key processes like reproduction, mortality and any stranding or sedimentation processes in an low resolution structured grid model \texttt{specify low-res?}.
+However, they did so by ignoring key processes like reproduction, mortality and any stranding or sedimentation processes in an low resolution structured grid model.
 
+We are examining the Elbe estuary as a case study.
+Like most alluvial estuaries it is relatively flat.
+Similar to other European estuaries it experienced a strong anthropogenic pressure over the last centauries.
+Most notably diking to restrain it to a narrow channel and dreading to improve access to the Hamburg harbor.
+Unlike other major european harbors, the Hamburg harbor is located far inwards roughly 100km away from the coast.
+This causes the river to experience a sudden jump in bathymetry from 5m at border of the city to almost 20m in the harbor (see fig. \ref{fig:bathymetry}). 
+This bathymetric jump is suspected to be the cause of a collapse of the phytoplankton biomass causing an increase in oxygen depletion and high ammonium reminaralization after the bathymetric jump. (cite)
+While major aspects of the along-channel biochemical dynamics have been studied little is known regarding their vertical and shore-to-shore dynamics.
 
-To \textbf{summarize} - several concepts for potential retention mechanisms have been found
+\begin{figure}
+    \includegraphics[width=\columnwidth]{harbor.png}
+    \caption{Bathymetry of the Elbe model around Hamburg. Note the bathymetric jumps from ~5m on the right, upstream side to a short 10m step in the upper harbor area to the ~20m in the lower harbor area all the way to the north sea. Also note that there exists no channel that does not pass through the 10km long exclusively 20m deep area. }
+    \label{fig:bathymetry}
+\end{figure}
+
+To summarize - several concepts for potential retention mechanisms have been found
  and shown to work in certain conditions.
 However, all approaches used major simplification which didn't allow them to study the full picture.
 We developed a new and more realistic approach to study retention using a particle tracking model.
@@ -79,103 +93,91 @@ We examine if such a system can reproduce phytoplankton retention in the Elbe es
 
 \subsubsection*{Particle tracking}
 
-In our study we take a particle tracking approach with a \textbf{lagrangian model} called Oceantracker (cite).
+In our study we take a particle tracking approach with a lagrangian model called Oceantracker (cite).
 Particle tracking offers several advantages for our question:
 While particle tracking on unstructured grids has been relatively computationally expensive until recently (cite).
 it allows us to reuse already validated hydrodynamic models.
-Reusing already computed hydrodynamical models to study tracer like objects with an Lagrangian model  is overall much faster then recalculating the advection-diffusion-equation in an Eularian model.
+Reusing already computed hydrodynamical models to study tracer like objects with an Lagrangian model  is overall much faster than recalculating the advection-diffusion-equation in an Eularian model.
 
 Additionally, because we are simulating individually particles we are able to observe their tracks.
 This makes it much easier and intuitive to interpret the results and allows us to include individual based properties and processes.
 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{Artboard 2.png}
-    \caption{Particle trackl visualisation}
-\end{figure}
-
-\subsubsection*{Data}
-We use the hydrodynamics \textbf{data} of the most recent SCHISM model (cite Johannes Pein).
-It is an three dimensional unstructured  grid model representing the full Elbe estuary from the weir at Geesthacht close to Helgoland including side-channels and the harbor.
+\subsubsection*{Hydrological model}
+We use the hydrodynamics data of the most recent SCHISM model (cite Johannes Pein).
+It is an three dimensional unstructured  grid model representing the full Elbe estuary from the weir at Geesthacht close to Helgoland including side-channels and the harbor (see fig. \ref{fig:model_domain}). 
 % (Look for more details in pein paper that might be interesting)
-It provides a node-based mesh field containing a range of information.
+The model provides a node-based mesh field containing a range of information.
 Most important for our purpose is the water velocity.
 But also salinity, water level, dispersion and many other more technical properties are used (See appendix \texttt{not yet added})
 The year represented in that dataset is 2012 with 1h temporal- and dynamically varying spacial resolution with a median distance between nodes of $\sim60m$.
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{dfg_foto_wettbewerbg_laurin_legendless_steidle.png}
-    \caption{model domain visualization - full range grid including statistical polygons for later reference and example of a scalar field (e.g. temperature)}
-    \label{fig:statistial polygons}
+    \includegraphics[width=\columnwidth]{dfg_foto_wettbewerbg_laurin_legendless_steidle_small.png}
+    \caption{Map of the full model domain with Geesthacht being the upstream boarder on the right and the Northsea being the downstream edge on the top left. The gray outline indicates the edge of the model domain. Blue and green dots show an example snapshot of a phytoplankton distribution in the model. Blue being floating, green being stranded particles.}
+    \label{fig:model_domain}
 \end{figure}
 
-\subsubsection*{Particle processes}
+\subsubsection*{Particle based processes}
 
-On top of the "blank" particle we add a set of textbf{biological features} to achieve a more realistic behavior.
+On top of the "blank" particle we add a set of biological features to achieve a more realistic behavior.
 The most important one is their ability to reproduce by creating copies of themselves.
-We also remove them under certain biologically unfavorable conditions. Specifically when they are stranded on the shore, starved for light or float in high salinity waters for too long (see appendix).
+This is represented as a constant chance of duplicating a particle.
+We also remove them under certain biologically unfavorable conditions. Specifically when they are stranded on the shore, starved for light or float in high salinity waters for too long.
+More precisely, they are removed if either of the following criteria is met: 
+When they reach high salinity waters implemented as a mortality chance $1\%$ every minute.
+of  in fixed intervals above $10$PSU.
+When they are stranded outside of the water and lie dry for more then $7$ consecutive days.
+When they are starved for light which is represented as a budget of $14$ days 
+where energy is lost in a fixed rate in low-light and gained in high light areas.
+
 A set of vertical movement features is added to model migration behavior. 
-These include a constant vertical velocity i.e. sinking and rising and a diel-migration pattern where they move up and down depending on the phase of the sun.
+This is implemented in two modes. 
+One being a constant vertical velocity i.e. sinking and rising
+The second being diel-migration where they move up and down depending on the phase of the sun.
 A large area of the estuary is very shallow with average water depths of below one meter. 
 We include a simple sedimentation and resuspension model to represent stranding by the tide and also sedimentation model for the water column where resupension is depending on a critical sheer velocity (see appendix).
 
+Particles are stranded and temporarily stuck in place when they cross a model boundary or when their current cell falls dry. 
+Particle are resuspended from the bottom based on a critical sheer velocity model.
+If they are stranded they resuspend as soon as there location is flooded again.
+
+The model also implements dynamic dispersion that is crucial to represent tidal-pumping processes and to allow for more realistic trajectories.
+
 \subsection*{Experimental configurations}
-
-% \begin{figure}
-%     \includegraphics[width=\columnwidth]{plot experimental configuration.pdf}
-%     \caption{2d grid with boxes for the different cases/dimension. 
-%              Same structure as the later sensitivity analysis plot used \ref{fig:retention_results_SA}}
-%     \label{fig:experimental_configuration}
-% \end{figure}
-
 
 The first experiment of this study examines retention success under different scenarios.
 The general idea is to release a population of plankton at the upstream end of the estuary represented by the weir in Geesthacht
 and examine how the population distrubutes itself over the estuary and whether it is able to maintain its population size.
-With this approach we study the effect of several mechanism in a sensitivity analysis. These include reproduction and migration:
-\textit{Reproduction} represented as a chance of duplicating a particle,
-\textit{vertical migration} where two modes have been implemented. 
-A constant up or downward drift and diel migration where the drift speed and direction is based on the phase of the sun.
-The particle \textit{stranding and resuspension} as well as \textit{suspend and resuspension to and from the bottom}
- based on a critical-friction-velocity model.
-Particles are removed if either of the following criteria is met: 
-When they reach high salinity waters implemented as a mortality chance in fixed intervals above $10 PSU$ (see appendix).
-When they are stranded outside of the water and lie dry for more then $7$ consecutive days.
-When they are starved for light which is represented as a budget of $14$ days 
-where energy is lost in a fixed rate in low-light and gained in high light areas.
-The model also implements dynamic dispersion that is crucial to represent tidal-pumping processes 
-and to allow for a realistic trajectories close to boundaries.
+% With this approach we study the effect of two retention mechanism in a sensitivity analysis. These being reproduction and migration.
 
 The initial particle batch that is representing our phytoplankton population is released at the beginning of the year in a volume at the weir in Geesthacht which marks the beginning of the Estuary.
 We evaluate their retention success by counting the amount of plankton in different regions in the estuary over time.
 If the population is growing at the end of the year we consider them "successfully retained".
-Population changes are measured at the end of the year relative to the population size after after an initial spin up time of three months where most of the initial batch has been washed out and the population typically is at its minimum.
-
+Population changes are measured at the end of the year relative to the population size after after an initial spin up time of three months where most of the initial batch has been washed out and the population is typically at its minimum.
 
 For each particle we log their distance traveled, age, water depth, and status - whether they are drifting, stranded on the shore or bottom.
-This allows us to compare the successful (died older then three months) and unsuccessful (died younger then then three months ) plankton.
+This allows us to compare the successful (died older then three months) and unsuccessful (died younger then three months ) plankton.
 The logged observables are measured every 12 hours starting at midnight.
 
 \medskip
 
-We use this set-up in a range of scenarios and compare them to each other.
+We use this set-up in a range of scenarios.
 We call the first and simplest scenario "dust". 
-Here we don't allow for any reproduction and give all particles a neutral buoyancy.
+Here we don not allow for any reproduction and give all particles a neutral buoyancy.
 Hence they are drifting like dust similar to a passive tracer
 This is our reference for any retention strategy. 
-For a retention strategy to be considered beneficial it must perform better then these passive tracers.
+For a retention strategy to be considered beneficial it must perform better than these passive tracers.
 
-In the second scenario referred to as "migration" reproduction is re-enabled with a range of different growth rates 
-and a range of different buoyancies i.e. vertical velocities is given to the plankton.
+In the second scenario referred to as "migration" reproduction is re-enabled.
+In this scenario we study the effect of different growth rates and buoyancies i.e. vertical velocities on the phytoplankton population in a sensitivity analysis.
 
 The third scenario has been added for illustration purposes.
 Here, we use the same set-up as in the second scenario with the only exception of disabling reproduction for particles stranded on the shores of the estuaries.
-We call this scenario "ready-for-liftoff" (\texttt{silly placeholder name})
-\label{txt:ready-for-liftoff}
 
-\subsubsection*{upstream migration}
+% \subsubsection*{upstream migration}
 
-In the second and minor experiment we test the hypothesis of "reseeding" - whether organisms can recolonize previously lost upstream habitats.
-\texttt{This is currently not included anymore. Seemed to uninteresting and far off track. What do you think?}
+% In the second and minor experiment we test the hypothesis of "reseeding" - whether organisms can recolonize previously lost upstream habitats.
+% \texttt{This is currently not included anymore. Seemed to uninteresting and far off track. What do you think?}
 
 
 \section*{Results}
@@ -187,33 +189,32 @@ In the second and minor experiment we test the hypothesis of "reseeding" - wheth
 \subsubsection*{Scenario: dust, mono- and diel migration}
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{diel_success.png}
-    \caption[]{relative population changes indication retention success for a set of scenarios with monotonic vertical migration}
+    \includegraphics[width=\columnwidth]{retention_success_sa_mono.png}
+    \caption[]{Relative population changes for the monotonic migration scenarios. Positive vertical velocities indicate an upwards drift direction. Positive population changes indicate a retention success (shown in green) while negative population changes predict a long term loss of the population (shown in brown).}
     \label{fig:monotonic_retention_success}
 \end{figure}
 \begin{figure}
-    \includegraphics[width=\columnwidth]{diel.png}
-    \caption[]{relative population changes indication retention success for a set of scenarios with diel vertical migration}
+    \includegraphics[width=\columnwidth]{retention_success_sa_diel.png}
+    \caption[]{Relative population changes for the diel migration scenarios. Positive vertical velocities indicate an upwards drift direction. Positive population changes indicate a retention success (shown in green) while negative population changes predict a long term loss of the population (shown in brown).}
     \label{fig:diel_retention_success}
 \end{figure}
 
 The results of the retention experiments are visualized as heatmaps in fig. \ref{fig:monotonic_retention_success} and \ref{fig:diel_retention_success}.
 Fig. \ref{fig:monotonic_retention_success} shows the results for the monotonic vertical migration scenarios e.g. constant sinking or rising.
 Fig. \ref{fig:diel_retention_success} shows the results for the diel vertical migration scenarios. For the monotonic case a positive vertical velocity indicates an upwards motion. For the the diel case a positive vertical velocity means that the particles are moving upwards during the day and downwards during the night.
-Each pixel in the heatmap represents a scenario with a specific vertical velocity and a specific reproduction rate. The coloring indicates the relative population change after one year. A positive (green) value is consider a successful retention while a negative (red) value indicates that the population is going to die out.
+Each pixel in the heatmap represents a scenario with a specific vertical velocity and a specific reproduction rate. The coloring indicates the relative population change after one year. A positive (green) value is consider a successful retention while a negative (brown) value indicates that the population is going to die out.
 
 The first thing that we wish to highlight is that the population successfully retains itself in certain scenarios. For the case of the monotonic migration we see a trend that the populations with higher positive velocities and higher growth rates are more successful in retaining themselves.
 For the case of the diel migration we see a trend to higher vertical velocities both upwards and downwards.
 
 Another thing that we would like to highlight is that populations with no reproduction are all unsuccessful in retaining themselves.
 
-We would also like to note that a net-zero-growth rates represent the cases in which the growth is equal to the mortality.
+We would also like to note that a net-zero-growth rates represent the cases in which the growth is equal to the net losses.
 Hence, the white pixels or the boundary between green and brown can be interpreted as an estimate for the total relative losses due to outwashing, dry-out when stranded, and light starvation.
 
 \medskip
 
-In the scenario "ready-for-liftoff" we examined the retention success for the monotonic case with reproduction disabled for non-moving particles - e.g. stranded or sedimented particles.
-For this scenario none of the tested parameters was able to successfully retain the population.
+In the scenario where we disabled reproduction for stranded particles we found that the population was unable to retain itself in all tested parameterizations.
 
 
 
@@ -222,8 +223,8 @@ For this scenario none of the tested parameters was able to successfully retain 
 \subsubsection*{Where do they survive?}
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{dbf_bar.png}
-    \caption[]{Boxplot of long-vs-short showing water depth}
+    \includegraphics[width=\columnwidth]{retention_boxplot.png}
+    \caption[]{Box and violing plot showing the vertical distribution of particles.  Short-living are those younger then 3 months and long-living all those older then that. Depth is measure relative to the current water surface with positive numbers being above the water surface i.e. stranded on the shore.}
     \label{fig:migration-long-vs-short}
 \end{figure}
 
@@ -234,7 +235,7 @@ We can clearly see that the long living subset predominantly lives in shallower 
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{heatmap.png}
-    \caption[]{heatmap of long-living to short-living-particles}
+    \caption[]{Hexbin heatmap showing average particle age per bin showing the brackish area of the Elbe downstream of the harbor.  Yellowish colors indicate an average age of over three months. \texttt{add labels and maybe use a different colormap?}}
     \label{fig:migration-long-vs-short-heatmap}
 \end{figure}
 
@@ -288,17 +289,18 @@ We assume that this is for the following reasons.
 Plankton that lives in this area falls dry on the shore on a regularly due to the tides basis. Hence, they are not moving downstream for a large portion of the day.
 We further see that positively buoyent plankton is more successful in retaining themselves. 
 This is likely due to the fact that they are more likely be washed up high up at shore where the water reaches them less frequently.
-This effect is emphasized in flatter regions where distances between the driftline and waters that don't fall dry is large, increasing the distance that the plankton has to travel without settling to be washed out.
+This effect is emphasized in flatter regions.
+Here the distance between the wash margin and deeper waters that do not fall dry is larger. 
 We assume that this effect would be further emphasized if we were to represent stokes drifts in our model even though wind forcing on the surface water is included.
 
 Initially we expected that negatively buoyant plankton would be more successful in retaining themselves.
 Sinking particles have a reduced downstream velocity as they tend to get stuck on the ground more often.
 Additionally, the bottom water layer in the Elbe typically has higher upstream velocity comparts to the upper water column.
-However, they still seem to be less successful then positively buoyant particles.
+However, they still seem to be less successful than positively buoyant particles.
 Examining our model we think  that this is because they tend to quickly aggregate in deep waters with little to no light where they are unable to sustain themselves and ultimately die out.
 This is hinting at the negative impact of dredging on sinking plankton as it both increases the volume of deep water and increases turbidity reducing the volume of illuminated water.
 
-It is interesting to see that in case of diel migration success does not seem to depend on whether they are moving up during the day or the night.
+We find it interesting to see that in the case of diel migration success does not seem to depend on whether they are moving up during the day or the night.
 We assume that this is to a large part due to them only surviving in shallow near-shore waters where light limitation does not play a role.
 We think the reason for higher success with higher vertical velocities is similar to the constant vertical velocity case.
 When the upwards diel migration aligns with a high tide the particles are more likely to be stranded far out onto the shore decreasing their risk to be washed out quickly.
@@ -310,7 +312,7 @@ We therefore think that a more realistic light limitation model might introduce 
 \subsection*{Limitations of the model}
 
 One major limitation of our model is the lack of nutrient limitation or the lack of a realistic ecosystem model in general.
-This could have been done by coupling our Lagrangian model online to an Eularian model that would have advected changes in concentrations fields by biotic activity throughout the model domain
+This could have been done by coupling our Lagrangian model online to an Eularian model that would have advected changes in concentrations fields by biotic activity throughout the model domain.
 However, this would have drastically increased both developing and computational time to a point where it would have been infeasible in our time frame and due to the lack of appropriate validation data.
 The key draw back of this is that growth rates could only be modeled as a constant rate assuming an "ad libitum" environment at all times.
 This introduces systematic errors in the population growth as areas which are beneficial for retention might in reality quickly run out of nutrients and could not sustain the growth conditions necessary to sustain the local population.
