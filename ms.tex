@@ -80,12 +80,10 @@ Nelson 7010, New Zealand}
     So far, little is known about how phytoplankton are able to be retained  within estuaries.
     We present a new individual-based Lagrangian model of the Elbe estuary which examines possible retention mechanisms for phytoplankton.
     Specifically, we investigated how reproduction, sinking and rising, as well as diel vertical migration may allow for populations to persist within the estuary. 
-    We find that vertial migration especially rising favors the retention, fast sinking does not.
+    We find that vertical migration especially rising favors the retention, fast sinking does not.
     We further provide first estimates on outwashing losses.
     Our simulations illustrate that riverbanks and tidal flats are essential for the long-term survival of phytoplankton populations, providing refuges from strong downstream currents.
     These results contribute to the understanding needed to advance ecosystem-based management of estuaries.
-    \texttt{decide how to use "doubling time" and "growth rate" consistently}
-    \texttt{"Just as a superficial reading would say its easy to be retained with normal doubling times with growth rates much smaller than those explored.?"}
 \end{abstract}
 
 
@@ -110,7 +108,7 @@ Like most ecosystems - estuarine ecosystem dynamics are strongly controlled by p
 % (Advances in phytoplankton population ecology in the Pearl river estuary).
 Apart from biofilm-forming phytoplankton which are attached to their substrate \citep{Cheah2022},
 %A methodological review on the characterization of microalgal biofilm and its  extracellular polymeric substances 
-the vast majority of phytoplankton organisms drifts passively in currents, though they may be able to infulence their vertical movement.
+the vast majority of phytoplankton organisms drifts passively in currents, though they may be able to influence their vertical movement.
 % The exception being biofilm-forming or benthic phytoplankton which are attached to their substrate (cite).
 With the estuary having a net outwards flow, we would expect phytoplankton to be moving downstream over time and to be washed out from limnic waters, via brackish into marine waters.
 Hence, the question arises how phytoplankton, as the drifting base of estuarine food webs, are able to maintain their population size without declining due to the net transport into the open ocean.
@@ -205,24 +203,18 @@ We add a set of biological features on top of the otherwise inanimate organism.
 These features include reproduction and mortality, vertical movement in form of sinking, rising or diel vertical migration, stranding, and settling on the riverbed.
 
 Reproduction is represented as a chance of creating copies of themselves.
-\textit{
-    This is a novel feature applied in OceanTracker that has not been included in any previous Lagrangian model of this kind.
-    OcenTrackers recent advances in computational efficiency and buffer handling \citep{Vennell2021} make it possible to simulate a large number of particles over a long period of time for the first time.
-}
+This is a novel feature applied in OceanTracker that has not been included in any previous Lagrangian model of this kind.
+OceanTrackers recent advances in computational efficiency \citep{Vennell2021} and buffer handling make it possible to simulate a large number of particles over a long period of time for the first time on unstructured grids.
 We perform several simulations for a range of reproduction rates that are constant over the lifetime of the particle and the chance to reproduce is evaluated every minute.
-\textit{
-    While a fixed reproduction rate is a simplification that does not allow for an accurate simulation of the population dynamics of a particular species, it does allow us to investigate the general mechanisms that enable plankton retention.
-}
+While a fixed reproduction rate is a simplification that does not allow for more realistic simulation of the population dynamics of a particular species, it does allow us to investigate the general mechanisms that enable plankton retention.
 
 Mortality is induced either by high salinity, when they dry-out while stranded, or due to long term light limitation.
 When particles are exposed to high salinity water above $20$PSU, a mortality probability of $0.5\%$ per minute is imposed.
 This threshold is chosen based on a range of the salinity tolerances of estuarine phytoplankton species presented in \citep{vonAlvensleben2016}.
 This is only an approximation and salinity tolerances many estuarine phytoplankton species deviate from this.
 However, the main motivation for this choice is that most of the particles that die through this process have passed the isohaline for more than 12 hours, one tidal cycle, and are assumed not to return again through this isohaline.
-\textit{
-    Anything outside the 20 PSU isohaline is not considered part of the estuary for the purposes of this study.
-    Therefore, we are not tailoring our salinity tolerance to a specific species, but rather testing whether they can retain themselves within this isohaline.
-}
+Anything outside the 20 PSU isohaline is not considered part of the estuary for the purposes of this study.
+Therefore, we are not tailoring our salinity tolerance to a specific species, but rather testing whether they can retain themselves within this isohaline.
 We consider particles that are stranded outside the water by the receding tide, and lie dry for more than $7$ consecutive days to be dead and remove them.
 Particles also die if they are light-limited for $28$ days \citep{Walter2017}.
 They are considered light-limited at a depth of $1 \unit{m}$ based on turbidity data presented in \citep{Pein2021}.
@@ -263,70 +255,75 @@ The displacement by vertical dispersion $\partial z$ of particle $i$ is calculat
     \partial z_{i} = K_{v}^{'}(z_{i}(n))\partial t + N(0, 2K_{v}(z_{i}))
 \end{equation}
 based on \citep{Yamazaki2014} where $z_{i}$ is the vertical position of the particle, $K_{v}^{'}$ is the vertical eddy diffusivity gradient, $K_{v}$ is the vertical eddy diffusivity and $N$ is the normal distribution.
-The term based $K_{v}^{'}$ is needed to avoid particle accumulation on the top and bottom of the water column.
+The term based $K_{v}^{'}$ is needed to avoid particle accumulation on the top and bottom of the water column from the hydrodynamic model output.
 
 For each particle we log their distance traveled, age, water depth, and status (whether they are drifting or settled on the river bank or bottom). This allows us for example to compare successfully retained particles (older than three months) unsuccessfully retained particles (dead after less than three months).
 These observables are recorded every 12 hours starting at midnight.
 
 %\subsubsection{Numerics}
-Model simulations and visualizations were performed in Python making heavy use of Numba, a LLVM-based Python JIT compiler \citep{Lam2015} to drastically speed up the simulations \citep{Vennell2021}.
+Model simulations and visualizations were performed in Python making heavy use of Numba, a LLVM-based Python JIT compiler \citep{Lam2015} to significantly speed up the simulations \citep{Vennell2021}.
 Trajectories were calculated using a second order Runge-Kutta scheme with a fixed time step of 60 \unit{s}.
-Flow velocities, like any other hydrodynamic data, were interpolated linearly in time and space using barycentric coordinates.
+Flow velocities, like any other hydrodynamic data, were interpolated linearly in time and space using barycentric coordinates, with the exception of water velocity in the bottom model cell, where logarithmic vertical interpolation is used.
 
 \subsection{Experimental configurations}
 
 We perform two sets of experiments to test the influence of different vertical movements on the retention success of phytoplankton in the Elbe estuary.
 
 In the first experiment, we examine a range of different monodirectional upward or downward particle velocities from $-10$ to $+10$ \unit{mm\;s^{-1}} in $2$ \unit{mm\;s^{-1}} steps representing sinking or rising phytoplankton organisms \citep{Fennessy1996}.
-Each vertical velocity is examined for a range of different growth rates with effective population doubling times ranging from 77 to 772 days with a logarithmic scaling.
-Hence, a total of 187 different scenarios are tested.
-In the second set of model experiments, we study the influence of possible diel vertical migration patterns for the same vertical velocities and growth rates.
-
 \textit{
-    In both sets of experiments, we release 10,000 individuals representing the studied phytoplankton population at the beginning of the year.
-    This results in over 1 billion individual particles simulated for each case with approximately 1 million particles active simultaneously counted over all cases over 500,000 time steps.
+    Each vertical velocity is examined for a range of different reproduction rates, expressed as population doubling times in idealized conditions ranging from 77 to 772 days with a logarithmic scaling.
+    In the following, we will use reproduction rate to refer to the prescribed population growth rate under ideal conditions and use growth rate whenever we describe population growth in nature. 
 }
+Hence, a total of 187 different scenarios are tested.
+In the second set of model experiments, we study the influence of possible diel vertical migration patterns for the same vertical velocities and reproduction rates.
+
+In both sets of experiments, we release 10,000 individuals representing the studied phytoplankton population at the beginning of the year.
+This results in over 1 billion individual particles simulated for each case with approximately 1 million particles active simultaneously counted over all cases over 500,000 time steps.
 The initial population is homogeneously distributed in a volume covering the full water column at the weir in Geesthacht (see fig. \ref{fig:model_domain}) and examine how the population distributes itself over the estuary and whether it is able to maintain its population size over time.
 Conceptually, we consider a population to be successfully retained if it is showing long term growth. 
 Practically, this is evaluated by comparing the population size at the end of the year to the size after release.
 The first three months of the simulations are considered as initial model spin-up time during which the initial population is dispersed downstream throughout the estuary.
 Population size changes are measured at the end of the year relative to the population size after this initial spin-up time.
-\texttt{For Ross: I do not consider runs longer then a year due to a lack of hydrodynamic data. Do you recommend to comment on it? I feel like this is not interesting enough as I do not expect the dynamics to fundamentally change if ie e.g. would release them during summer and then waited for a full year.}
 
-\textit{
-    Computations were performed on the supercomputer Mistral at the German Climate Computing Center (DKRZ) in Hamburg, Germany.
-    The simulations were performed on a compute node with two  Intel Xeon E5-2680 v3 12-core processor (Haswell) and 128 GB of RAM with a total run time of approximately 4.5 hours.
-}
+Computations were performed on the supercomputer Mistral at the German Climate Computing Center (DKRZ) in Hamburg, Germany.
+The simulations were performed on a compute node with two  Intel Xeon E5-2680 v3 12-core processor (Haswell) and 128 GB of RAM with a total run time of approximately 4.5 hours.
 
 \section{Results}
 
 \subsection{Retentions success in different scenarios}
 
 \begin{figure}
-    \includegraphics[width=8.3cm]{figures/retention_success_combined.png}
+    \includegraphics[width=8.3cm]{retention_success_combined.png}
     \caption[]{
-        Relative population changes for the monodirectional movement (a) and diel migration (b) scenarios. Positive vertical velocities indicate an upwards drift. Positive population changes represent a retention success (green) while negative population changes represent a loss of the population (brown).
+        Relative population changes for the monodirectional movement (a) and diel migration (b) scenarios. Positive vertical velocities indicate an upwards drift. Positive population changes represent a retention success (green) while negative population changes represent a loss of the population (brown). 
+        \textit{
+            The vertical black lines indicate the boundary between successfully and unsuccessfully retained scenarios.
         }
+        \texttt{
+            Still playing with the vertical lines. Not happy with the current aesthetic.
+        }
+    }
     \label{fig:retention_success}
 \end{figure}
 
 The results of the retention experiments are visualized as heatmap in fig. \ref{fig:retention_success}.
-Fig. \ref{fig:retention_success}a shows the results for the monodirectional vertical migration scenarios i.e. constant sinking or rising. Fig. \ref{fig:retention_success}b shows the results for the diel vertical migration scenarios. Each pixel in the heatmap represents a simulation with a specific combination of vertical velocity and growth rate. The coloring indicates the relative population change after one year. White pixels and the boundary between green and brown pixels represent net-zero growth rate simulations. In this case, the losses are equal to the growth. Therefore, we can use the growth rate as an estimate for the total relative losses due to downstream transport, drying out while being stranded, and light starvation.
+Fig. \ref{fig:retention_success}a shows the results for the monodirectional vertical migration scenarios i.e. constant sinking or rising. Fig. \ref{fig:retention_success}b shows the results for the diel vertical migration scenarios. Each pixel in the heatmap represents a simulation with a specific combination of vertical velocity and reproduction rate. The coloring indicates the relative population change after one year. White pixels and the boundary between green and brown pixels represent net-zero growth rate simulations. In this case, the losses are equal to the growth. Therefore, we can use the reproduction rate as an estimate for the total relative losses due to downstream transport, drying out while being stranded, and light starvation.
 
 Our simulations show that the population is able to successfully retains itself under certain conditions.
+Passively drifting particles are able to sustain themselves in the estuary if they have a reproduction rate that doubles their population size within approximately 4 months.
 \textit{
-    Passively drifting particles are able to sustain themselves in the estuary if they have a growth rate that doubles their population size within approximately 4 months.
+    Note that the growth rates realized in nature may vary from this value due to e.g. nutrient or temperature limitations. The reproduction thresholds should be interpreted as an upper bound rather than an accurate estimate of the growth rate.
 }
-For the case of the monodirectional movement we see that a higher positive velocity (representing buoyancy) and a higher growth rate is more beneficial for retention success than a downward oriented velocity (sinking) and lower growth rates.
+For the case of the monodirectional movement we see that a higher positive velocity (representing buoyancy) and a higher reproduction rate is more beneficial for retention success than a downward oriented velocity (sinking) and lower reproduction rates.
 As expected, simulations in which the reproduction is set to zero do not show any retention success.
-While it is easy to understand that high growth rates aid retention, we were surprised that buoyant phytoplankton particles are more successful in maintaining their growth in an estuary than sinking ones.
+While it is easy to understand that high reproduction rates aid retention, we were surprised that buoyant phytoplankton particles are more successful in maintaining their growth in an estuary than sinking ones.
 
 For the case of the diel vertical migration in the velocity range of 4 to 10 \unit{mm\;s^{-1}} we see an equal or higher retention success compared to the case with no vertical migration.
 A diel velocity of 2 \unit{mm\;s^{-1}} is less successful than no migration.
 Most importantly, none of the diel migration scenarios improve the retention success, when compared to passively drifting organisms.
 
 
-\subsection{Spatial analysis}
+\subsection{Spatial factors}
 
 We are now taking a closer look at spacial factors that allow phytoplankton particles to maintain net growth in the estuary. 
 For this analysis we used data from both sets of experiments.
@@ -359,7 +356,7 @@ These yellow areas are mainly found along the river banks in shallow waters or t
 \end{figure}
 
 To further investigate the reasons for the positive effect of buoyancy and the importance of shallow waters and tidal flats, we repeated the first set of simulations and disabled the reproduction of settled and stranded particles.
-Under these conditions, populations were unable to retain themselves in the estuary, regardless of their vertical velocity and growth rate indicating that tidal flats are essential for the survival of the population.
+Under these conditions, populations were unable to retain themselves in the estuary, regardless of their vertical velocity and reproduction rate indicating that tidal flats are essential for the survival of the population.
 
 
 %\subsubsection{Discussion}
@@ -372,11 +369,10 @@ In this study, we investigated different strategies to explain how phytoplankton
 % In addition, we found that buoyancy aids the retention success, whereas sinking decreases the retention success. Finally, especially shallow areas near the river banks and tidal flats represent important habitats for phytoplankton organisms and allow them to survive, whereas deeper areas lead to a faster transport of estuarine phytoplankton into the marine waters.
 
 The limit for population doubling times that we found to be necessary for survival for passively drifting plankton is of the order of around 4 months. Doubling times typically realized in natures are of the order of a few days which is two magnitudes small then those that we found necessary in our model \citep{Koch2004,Wirtz2011}.
-The low growth rates required for successful retention demonstrate that our model is also meaningful under more realistic environmental conditions, for example if maximum growth rates cannot be reached due to nutrient or temperature limitation.
+The low reproduction rates required for successful retention demonstrate that our model is also meaningful under more realistic environmental conditions, for example if maximum growth rates cannot be reached due to nutrient or temperature limitations.
 
 Our results suggest that shallow areas are very important for maintaining the estuary phytoplankton population.
-Plankton that consistently finds itself in this area falls dry on the shore on a regular basis due to the tides.
-Therefore, they do not move during a tidal cycle.
+\textit{Plankton that consistently finds itself in areas that are dry due to the tides will regularly become stranded and therefore not move for much of the tidal cycle.}
 We further see that positively buoyant plankton are more successful in retaining themselves. 
 This is probably because they are more likely to be transported high up on the river bank where the water is less likely to reach them.
 This effect is emphasized in flatter regions as the distance between the wash margin and constantly flooded areas is larger increasing the chance of settlement or them stranding again.
@@ -384,9 +380,9 @@ This effect is emphasized in flatter regions as the distance between the wash ma
 
 Initially, we expected sinking particles to have a higher retention success than buoyant ones. 
 However, we found that faster sinking particles are less successful in retaining themselves.
-Sinking velocities of less then $2 \unit{mm\;s^{-1}}$ are common for diatoms \citep{Passow1991} while larger velocities have been observed for aggregates in the Elbe estuary \citep{Fennessy1996}.
+Sinking velocities of less than $2 \unit{mm\;s^{-1}}$ are common for diatoms \citep{Passow1991} while larger velocities have been observed for aggregates in the Elbe estuary \citep{Fennessy1996}.
 Sinking particles have a reduced downstream velocity because find themselves either settled on the riverbed not moving at all or close to the bed where the average downstream velocity is lower.
-In addition, the deeper water layers of the Elbe have on average a lower downstream velocity than the upper water column or moves upstream  due to temperature-induced density stratification \citep{Pein2021}.
+In addition, the deeper water layers of the Elbe have on average a lower downstream velocity than the upper water column or move upstream  due to temperature-induced density stratification \citep{Pein2021}.
 Nevertheless, buoyant particles were more successful in their retention in our simulations.
 The low chance of survival in the estuary for sinking particles might be explained by their light limitation in deeper waters.
 We expected particles to die if they are exposed to dark conditions for more than 2 weeks.
@@ -414,7 +410,6 @@ The key draw back of this is that growth rates could only be modeled as a consta
 This can lead to systematic errors in estimating population growth.
 In reality, it can happen that nutrient limitation, which slows down the growth of the population, can occur, especially in the most light-saturated areas near the shore. For this reason, we may overestimate the role of shallow areas in our model.
 
-
 To be consistent with the complexity of the representation of biotic mechanisms, we use a simplistic light limitation.
 Particles are expected to be light limited below a water depth of 1 \unit{m} and not light limited above this threshold. 
 We have not included a more complex light limitation model that takes into account current light availability and attenuation.
@@ -431,8 +426,15 @@ In our representation we assume perfectly flat surfaces with a median distance b
 This 'polished' model representation can lead to an underestimation of the retention success, since the surface area on which phytoplankton organisms can settle is underestimated.
 In reality, vegetation, rocks or other surface irregularities cause a larger surface area on which the phytoplankton organisms can settle.
 
+\textit{
+    Our hydrodynamics data set was limited to the year 2012.
+    Therefore, we were not able to study different release times with the same methodology.
+    While we do not expect the general dynamics to change, future research could examine the effect of varying discharge throughout the seasons on retention.
+}
+
 While our model does have a settling and resuspension mechanic based on critical sheer velocities we still assume a static bathymetry with sediments not able to move or bury particles. 
 This masks potential losses due to particles being buried but also decreases resuspension times.
+
 
 
 
@@ -442,11 +444,9 @@ However, their effect can currently not be quantified due to the lack of validat
 Chlorophyll data with a sufficient temporal and spacial resolution is only gathered in the center of the river.
 Future monitoring efforts should therefore also include data along the river shores on tidal flats or shore-to-shore to quantify the effect of potential future changes by dredging, diking or restoration attempts.
 
-\textit{
-    Frequently stranded plankton have been shown to be essential to the survival of populations in our model.
-    However, data on their ability to survive under these conditions are scarce.
-    Our results suggest that these conditions may be as important as their ability to quickly regrow under more favorable conditions, and we suggest further research on plankton survivability when stranded.
-}
+Frequently stranded plankton have been shown to be essential to the survival of populations in our model.
+However, data on their ability to survive under these conditions are scarce.
+Our results suggest that these conditions may be as important as their ability to quickly regrow under more favorable conditions, and we suggest further research on plankton survivability when stranded.
 
 For several decades, the annual average chlorophyll concentration in the Elbe estuary has been decreasing (data available at www.fgg-elbe.de/elbe-datenportal.html or see \citep{Hardenbicker2014,Schol2014}), while upstream concentrations do not show this effect.
 The reasons for this are not fully understood, but one possible reason is the increase in dredge activity.
